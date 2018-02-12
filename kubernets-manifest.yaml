@@ -1,0 +1,51 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: documentdb-example-deployment
+  labels:
+    app: documentdb-example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: documentdb-example
+  template:
+    metadata:
+      labels:
+        app: documentdb-example
+    spec:
+      containers:
+      - name: documentdb-example
+        image: jeremyrickard/documentdb-example:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: AZURE_DOCUMENTDB_URI
+          valueFrom:
+            secretKeyRef:
+              name: docuemntdb-binding
+              key: uri
+        - name: AZURE_DOCUMENTDB_KEY
+          valueFrom:
+            secretKeyRef:
+              name: docuemntdb-binding
+              key: primaryKey
+        - name: AZURE_DOCUMENTDB_DATABASE
+          value: osba-example
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: documentdb-example
+  name: documentdb-example-deployment
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: documentdb-example

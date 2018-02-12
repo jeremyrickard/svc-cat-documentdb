@@ -1,0 +1,41 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.10.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.github.jeremyrickard'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+ext {
+	azureVersion = '0.2.0'
+}
+
+dependencies {
+	compile('com.microsoft.azure:azure-spring-boot')
+	compile('com.microsoft.azure:azure-documentdb-spring-boot-starter')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "com.microsoft.azure:azure-spring-boot-bom:${azureVersion}"
+	}
+}
